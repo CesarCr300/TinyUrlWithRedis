@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
 
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { IIdGeneratorService } from './services/id-generator.service';
 import { IdGeneratorService } from './services/implementation/id-generator.implementation.service';
 
 @Module({
   imports: [],
   controllers: [AppController],
   providers: [
-    AppService,
     {
-      provide: 'IIdGeneratorService',
+      provide: IIdGeneratorService,
       useClass: IdGeneratorService,
     },
   ],
