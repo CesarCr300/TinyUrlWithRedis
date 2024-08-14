@@ -1,3 +1,4 @@
+import { Redis } from 'ioredis';
 import { Injectable } from '@nestjs/common';
 
 import { IUrlPersistenceService } from '../url-persistence.service';
@@ -6,7 +7,17 @@ import { IUrlPersistenceService } from '../url-persistence.service';
 export class UrlRedisPersistenceImplementationService
   implements IUrlPersistenceService
 {
-  save(originalUrl: string, shortUrl: string): void {
-    // Save the URL to redis
+  private redisClient: Redis;
+
+  constructor() {
+    this.redisClient = new Redis();
+  }
+
+  async save(originalUrl: string, shortUrl: string): Promise<void> {
+    try {
+      await this.redisClient.set(shortUrl, originalUrl);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

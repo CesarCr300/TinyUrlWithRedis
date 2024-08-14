@@ -3,6 +3,8 @@
 /node_modules
 /build
 
+WHAT-TO-DO.md
+
 # Logs
 logs
 *.log
