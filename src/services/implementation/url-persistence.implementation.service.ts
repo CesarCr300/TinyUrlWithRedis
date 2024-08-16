@@ -20,4 +20,13 @@ export class UrlRedisPersistenceImplementationService
       console.log(error);
     }
   }
+
+  async getOriginalUrl(shortUrl: string): Promise<string | null> {
+    try {
+      return await this.redisClient.get(shortUrl);
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+  }
 }
