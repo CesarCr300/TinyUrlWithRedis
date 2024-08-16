@@ -19,7 +19,7 @@ export class UrlShorterService implements IUrlShorterService {
     if (urlShortedExists) {
       return {
         originalUrl: url,
-        shortUrl: await this.urlPersistenceService.getOriginalUrl(url),
+        shortUrl: urlShortedExists,
       };
     }
 
