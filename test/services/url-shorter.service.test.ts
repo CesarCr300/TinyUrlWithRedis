@@ -38,9 +38,9 @@ describe('UrlShorterService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return the original URL and the generated short URL', () => {
+  it('should return the original URL and the generated short URL', async () => {
     const url = 'https://www.google.com';
-    const response = service.shortUrl(url);
+    const response = await service.shortUrl(url);
 
     expect(response.originalUrl).toEqual(url);
     expect(response.shortUrl).toEqual('1234567890');
