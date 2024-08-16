@@ -15,6 +15,14 @@ export class UrlShorterService implements IUrlShorterService {
   ) {}
 
   async shortUrl(url: string): Promise<ShortUrlResponseDto> {
+    const urlShortedExists = await this.urlPersistenceService.wasShorted(url);
+    if (urlShortedExists) {
+      return {
+        originalUrl: url,
+        shortUrl: await this.urlPersistenceService.getOriginalUrl(url),
+      };
+    }
+
     const shortUrl = this.idGeneratorService.generate();
     await this.urlPersistenceService.save(url, shortUrl);
     return {

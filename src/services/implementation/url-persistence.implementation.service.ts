@@ -29,4 +29,20 @@ export class UrlRedisPersistenceImplementationService
       return null;
     }
   }
+
+  async wasShorted(url: string): Promise<string | null> {
+    try {
+      const keys = await this.redisClient.keys('*');
+      for (const key of keys) {
+        const storedValue = await this.redisClient.get(key);
+        if (storedValue === url) {
+          return key;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+      return null;
+    }
+    return null;
+  }
 }
