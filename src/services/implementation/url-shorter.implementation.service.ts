@@ -14,9 +14,9 @@ export class UrlShorterService implements IUrlShorterService {
     private readonly idGeneratorService: IIdGeneratorService,
   ) {}
 
-  shortUrl(url: string): ShortUrlResponseDto {
+  async shortUrl(url: string): Promise<ShortUrlResponseDto> {
     const shortUrl = this.idGeneratorService.generate();
-    this.urlPersistenceService.save(url, shortUrl);
+    await this.urlPersistenceService.save(url, shortUrl);
     return {
       originalUrl: url,
       shortUrl,
