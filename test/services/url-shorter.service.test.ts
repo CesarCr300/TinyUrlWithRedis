@@ -41,28 +41,58 @@ describe('UrlShorterService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should return the original URL and the generated short URL', async () => {
-    const url = 'https://www.google.com';
-    const response = await service.shortUrl(url);
+  describe('shortUrl', () => {
+    it('should return the original URL and the generated short URL', async () => {
+      const url = 'https://www.google.com';
 
-    expect(response.originalUrl).toEqual(url);
-    expect(response.shortUrl).toEqual('1234567890');
+      const response = await service.shortUrl(url);
 
-    expect(urlPersistenceService.save).toHaveBeenCalledWith(url, '1234567890');
+      expect(response.originalUrl).toEqual(url);
+      expect(response.shortUrl).toEqual('1234567890');
+
+      expect(urlPersistenceService.save).toHaveBeenCalledWith(
+        url,
+        '1234567890',
+      );
+    });
+
+    it('should return the existence shorted url if it was already shorted and saved it', async () => {
+      const url = 'https://www.google.com';
+      urlPersistenceService.wasShorted = jest
+        .fn()
+        .mockResolvedValue('1234567890');
+      urlPersistenceService.getOriginalUrl = jest
+        .fn()
+        .mockResolvedValue('1234567890');
+
+      const response = await service.shortUrl(url);
+
+      expect(response.originalUrl).toEqual(url);
+      expect(response.shortUrl).toEqual('1234567890');
+
+      expect(urlPersistenceService.save).not.toHaveBeenCalled();
+    });
   });
 
-  it('should return the existence shorted url if it was already shorted and saved it', async () => {
-    const url = 'https://www.google.com';
-    urlPersistenceService.wasShorted = jest.fn().mockResolvedValue(true);
-    urlPersistenceService.getOriginalUrl = jest
-      .fn()
-      .mockResolvedValue('1234567890');
+  describe('getOriginalUrl', () => {
+    it('should return the original URL', async () => {
+      const shortUrl = '1234567890';
+      urlPersistenceService.getOriginalUrl = jest
+        .fn()
+        .mockResolvedValue('https://www.google.com');
 
-    const response = await service.shortUrl(url);
+      const response = await service.getOriginalUrl(shortUrl);
 
-    expect(response.originalUrl).toEqual(url);
-    expect(response.shortUrl).toEqual('1234567890');
+      expect(response).toEqual('https://www.google.com');
+    });
 
-    expect(urlPersistenceService.save).not.toHaveBeenCalled();
+    it('should return null if the short URL does not exist', async () => {
+      const shortUrl = '1234567890';
+      urlPersistenceService.getOriginalUrl = jest.fn().mockResolvedValue(null);
+
+      const response = await service.getOriginalUrl(shortUrl);
+
+      expect(response).toBeNull();
+    });
   });
 });
