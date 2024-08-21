@@ -1,6 +1,9 @@
 import { Redis } from 'ioredis';
 import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
+import { UrlEntity } from '../../entities/url.entity';
 import { IUrlPersistenceService } from '../url-persistence.service';
 
 @Injectable()
@@ -9,12 +12,16 @@ export class UrlRedisPersistenceImplementationService
 {
   private redisClient: Redis;
 
-  constructor() {
+  constructor(
+    @InjectRepository(UrlEntity)
+    private readonly urlRepository: Repository<UrlEntity>,
+  ) {
     this.redisClient = new Redis();
   }
 
   async save(originalUrl: string, shortUrl: string): Promise<void> {
     try {
+      await this.urlRepository.save(new UrlEntity(originalUrl, shortUrl));
       await this.redisClient.set(shortUrl, originalUrl);
     } catch (error) {
       console.log(error);
