@@ -16,7 +16,6 @@ export class UrlShorterService implements IUrlShorterService {
 
   async shortUrl(url: string): Promise<ShortUrlResponseDto> {
     const urlShortedExists = await this.urlPersistenceService.wasShorted(url);
-    console.log(urlShortedExists, 'urlShortedExists');
     if (urlShortedExists) {
       return {
         originalUrl: url,

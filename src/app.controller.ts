@@ -6,7 +6,6 @@ import {
   Param,
   Post,
   Redirect,
-  Res,
 } from '@nestjs/common';
 
 import { IUrlShorterService } from './services/url-shorter.service';
